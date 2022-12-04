@@ -49,7 +49,7 @@ def shared_mul(A, B, out):
 
         # Wait until all threads finish computing
         cuda.syncthreads()
-
+    # Write coalescing acess to global memory 
     out[j, i] = temp    
     
     
