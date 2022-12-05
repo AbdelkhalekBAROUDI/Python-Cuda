@@ -1,1 +1,1 @@
-from Samples import *
+from Samples.mod_matmul_numba import wrap_matmul_numba
