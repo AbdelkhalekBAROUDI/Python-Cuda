@@ -23,7 +23,7 @@ def tile_transpose(a, transposed):
     tile[cuda.threadIdx.y, cuda.threadIdx.x] = a[a_col, a_row]
 
     # 3) Wait for all threads in the block to finish updating shared memory.
-        cuda.syncthreads()    
+    cuda.syncthreads()    
     # 4) Calculate transposed location for the shared memory array tile
     # to be written back to global memory. Note that blockIdx.y*blockDim.y 
     # and blockIdx.x* blockDim.x are swapped (because we want to write to the
@@ -38,7 +38,7 @@ def tile_transpose(a, transposed):
     transposed[t_col, t_row] = tile[cuda.threadIdx.x, cuda.threadIdx.y]
 
     
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
 
 # Bank conflicts free
 @cuda.jit
@@ -74,19 +74,19 @@ def tile_transpose_conflict_free(a, transposed):
     transposed[t_y, t_x] = tile[cuda.threadIdx.x, cuda.threadIdx.y]
     
     
-    #-------------------------------------------------------------------------
+#-------------------------------------------------------------------------
     
     
-    def wrap_matrans_numba(nb, tpb, A):
-        out   = np.zeros_like(A).astype(np.float32)
-        d_A   = cuda.to_device(A)
-        d_out = cuda.to_device(out)
+def wrap_matrans_numba(nb, tpb, A):
+    out   = np.zeros_like(A).astype(np.float32)
+    d_A   = cuda.to_device(A)
+    d_out = cuda.to_device(out)
 
-        cuda.synchronize()
-        shared_mul[nb,tpb](d_A, d_out)
-        cuda.synchronize()
+    cuda.synchronize()
+    shared_mul[nb,tpb](d_A, d_out)
+    cuda.synchronize()
         
-        out = d_out.copy_to_host()
-        cuda.synchronize()
+    out = d_out.copy_to_host()
+    cuda.synchronize()
         
-       return out
+    return out
