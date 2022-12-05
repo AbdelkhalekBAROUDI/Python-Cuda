@@ -83,7 +83,7 @@ def wrap_matrans_numba(nb, tpb, A):
     d_out = cuda.to_device(out)
 
     cuda.synchronize()
-    shared_mul[nb,tpb](d_A, d_out)
+    tile_transpose_conflict_free[nb,tpb](d_A, d_out)
     cuda.synchronize()
         
     out = d_out.copy_to_host()
